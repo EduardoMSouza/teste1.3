@@ -1,0 +1,26 @@
+package com.consultorio.domain.paciente.DTOs;
+
+import com.consultorio.domain.paciente.Enums.Dente;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Builder;
+
+@Builder
+public record PlanoTratamentoUpdateDTO(
+        @NotNull(message = "Dente é obrigatório") // ✅ Mudado para @NotNull
+        Dente dente, // ✅ Mudado de String para Dente
+
+        @NotBlank(message = "Procedimento é obrigatório")
+        String procedimento,
+
+
+        @Positive(message = "Valor deve ser maior que zero")
+        Double valor,
+
+        String observacao,
+
+
+        @Positive(message = "Valor total deve ser maior que zero")
+        Double valorTotal
+) {}

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Builder
 public record AgendaUpdateDTO(
-        @NotNull(message = "ID do paciente é obrigatório")
         Long pacienteId,
 
         @NotNull(message = "ID do dentista é obrigatório")

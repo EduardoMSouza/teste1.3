@@ -27,10 +27,8 @@ public record PacienteCreateDTO(
         @Past(message = "Data de nascimento deve ser uma data passada")
         LocalDate dataNascimento,
 
-        @NotNull(message = "Sexo é obrigatório")
         Sexo sexo,
 
-        @NotNull(message = "Estado civil é obrigatório")
         EstadoCivil estadoCivil,
 
         // === DADOS PESSOAIS OPCIONAIS ===

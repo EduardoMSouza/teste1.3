@@ -4,6 +4,12 @@ package com.consultorio.domain.agenda;
 import com.consultorio.domain.agenda.dto.*;
 import com.consultorio.domain.agenda.exception.AgendamentoNotFoundException;
 import com.consultorio.domain.agenda.exception.ConflitoAgendamentoException;
+import com.consultorio.domain.dentista.Dentista;
+import com.consultorio.domain.dentista.DentistaRepository;
+import com.consultorio.domain.dentista.exception.DentistaNotFoundException;
+import com.consultorio.domain.paciente.entity.Paciente;
+import com.consultorio.domain.paciente.erro.PacienteNotFoundException;
+import com.consultorio.domain.paciente.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +29,8 @@ public class AgendaService {
 
     private final AgendaRepository repository;
     private final AgendaConverter converter;
+    private final DentistaRepository dentistaRepository;
+    private final PacienteRepository pacienteRepository;
 
     @Transactional
     public AgendaResponseDTO criar(AgendaCreateDTO dto) {
@@ -31,6 +39,11 @@ public class AgendaService {
         validarDisponibilidade(dto.dentistaId(), dto.dataHora(), null);
 
         Agenda agenda = converter.toEntity(dto);
+
+        Long pacienteId = normalizePacienteId(dto.pacienteId());
+        agenda.setPacienteId(pacienteId);
+        agenda.setPacienteNome(resolvePacienteNome(pacienteId, dto.pacienteNome()));
+        agenda.setDentistaNome(resolveDentistaNome(dto.dentistaId()));
         Agenda saved = repository.save(agenda);
 
         log.info("Agendamento criado com ID: {}", saved.getId());
@@ -90,6 +103,18 @@ public class AgendaService {
         }
 
         converter.updateEntityFromDTO(agenda, dto);
+
+        if (dto.pacienteId() != null) {
+            Long pacienteId = normalizePacienteId(dto.pacienteId());
+            agenda.setPacienteId(pacienteId);
+            if (pacienteId != null) {
+                agenda.setPacienteNome(resolvePacienteNome(pacienteId, null));
+            }
+        }
+
+        if (dto.dentistaId() != null) {
+            agenda.setDentistaNome(resolveDentistaNome(agenda.getDentistaId()));
+        }
         Agenda updated = repository.save(agenda);
 
         log.info("Agendamento ID: {} atualizado com sucesso", id);
@@ -170,6 +195,30 @@ public class AgendaService {
         return repository.findByDataHoraBetweenOrderByDataHoraAsc(inicio, fim).stream()
                 .map(converter::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Long normalizePacienteId(Long pacienteId) {
+        return (pacienteId != null && pacienteId > 0) ? pacienteId : null;
+    }
+
+    private String resolvePacienteNome(Long pacienteId, String nomeInformado) {
+        if (pacienteId != null) {
+            Paciente paciente = pacienteRepository.findById(pacienteId)
+                    .orElseThrow(() -> new PacienteNotFoundException("Paciente não encontrado com ID: " + pacienteId));
+            return paciente.getNome();
+        }
+
+        if (nomeInformado == null || nomeInformado.isBlank()) {
+            throw new IllegalArgumentException("Nome do paciente é obrigatório quando o paciente não está cadastrado.");
+        }
+
+        return nomeInformado.trim();
+    }
+
+    private String resolveDentistaNome(Long dentistaId) {
+        Dentista dentista = dentistaRepository.findById(dentistaId)
+                .orElseThrow(() -> new DentistaNotFoundException("Dentista não encontrado com ID: " + dentistaId));
+        return dentista.getNome();
     }
 
     private void validarDisponibilidade(Long dentistaId, LocalDateTime dataHora, Long idExcluir) {

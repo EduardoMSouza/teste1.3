@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/dentistas")
+@RequestMapping("/dentistas")
 @CrossOrigin(origins = "*")
 public class DentistaController {
 

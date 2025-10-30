@@ -51,7 +51,7 @@ public class AgendaConverter {
 
     public Agenda toEntity(AgendaCreateDTO dto) {
         return Agenda.builder()
-                .pacienteId(dto.pacienteId())
+                .pacienteId(normalizePacienteId(dto.pacienteId()))
                 .pacienteNome(dto.pacienteNome())
                 .dentistaId(dto.dentistaId())
                 .dentistaNome(dto.dentistaNome())
@@ -65,7 +65,7 @@ public class AgendaConverter {
 
     public Agenda toEntity(AgendaRequestDTO dto) {
         return Agenda.builder()
-                .pacienteId(dto.pacienteId())
+                .pacienteId(normalizePacienteId(dto.pacienteId()))
                 .pacienteNome(dto.pacienteNome())
                 .dentistaId(dto.dentistaId())
                 .dataHora(dto.dataHora())
@@ -80,7 +80,7 @@ public class AgendaConverter {
 
     public void updateEntityFromDTO(Agenda agenda, AgendaUpdateDTO dto) {
         if (dto.pacienteId() != null) {
-            agenda.setPacienteId(dto.pacienteId());
+            agenda.setPacienteId(normalizePacienteId(dto.pacienteId()));
         }
         if (dto.dentistaId() != null) {
             agenda.setDentistaId(dto.dentistaId());
@@ -97,6 +97,10 @@ public class AgendaConverter {
         if (dto.email() != null) {
             agenda.setEmail(dto.email());
         }
+    }
+
+    private Long normalizePacienteId(Long pacienteId) {
+        return (pacienteId != null && pacienteId > 0) ? pacienteId : null;
     }
 
     public void updateStatusFromDTO(Agenda agenda, AgendaStatusUpdateDTO dto) {

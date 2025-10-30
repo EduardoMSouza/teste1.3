@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/agendamentos/**", "/dentistas/**", "/pacientes/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 );

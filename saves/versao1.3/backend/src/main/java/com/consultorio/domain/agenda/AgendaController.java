@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/agendamentos")
+@RequestMapping("/agendamentos")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AgendaController {
@@ -25,7 +25,7 @@ public class AgendaController {
 
     @PostMapping
     public ResponseEntity<AgendaResponseDTO> criar(@Valid @RequestBody AgendaCreateDTO dto) {
-        log.info("POST /api/agendamentos - Criando novo agendamento");
+        log.info("POST /agendamentos - Criando novo agendamento");
         AgendaResponseDTO response = service.criar(dto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -38,31 +38,31 @@ public class AgendaController {
 
     @GetMapping
     public ResponseEntity<List<AgendaListDTO>> listar() {
-        log.info("GET /api/agendamentos - Listando todos os agendamentos");
+        log.info("GET /agendamentos - Listando todos os agendamentos");
         return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/dentista/{dentistaId}")
     public ResponseEntity<List<AgendaListDTO>> listarPorDentista(@PathVariable Long dentistaId) {
-        log.info("GET /api/agendamentos/dentista/{} - Listando por dentista", dentistaId);
+        log.info("GET /agendamentos/dentista/{} - Listando por dentista", dentistaId);
         return ResponseEntity.ok(service.listarPorDentista(dentistaId));
     }
 
     @GetMapping("/paciente/{pacienteId}")
     public ResponseEntity<List<AgendaListDTO>> listarPorPaciente(@PathVariable Long pacienteId) {
-        log.info("GET /api/agendamentos/paciente/{} - Listando por paciente", pacienteId);
+        log.info("GET /agendamentos/paciente/{} - Listando por paciente", pacienteId);
         return ResponseEntity.ok(service.listarPorPaciente(pacienteId));
     }
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<AgendaListDTO>> listarPorStatus(@PathVariable Agenda.StatusAgendamento status) {
-        log.info("GET /api/agendamentos/status/{} - Listando por status", status);
+        log.info("GET /agendamentos/status/{} - Listando por status", status);
         return ResponseEntity.ok(service.listarPorStatus(status));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AgendaResponseDTO> buscarPorId(@PathVariable Long id) {
-        log.info("GET /api/agendamentos/{} - Buscando por ID", id);
+        log.info("GET /agendamentos/{} - Buscando por ID", id);
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
@@ -70,7 +70,7 @@ public class AgendaController {
     public ResponseEntity<AgendaResponseDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody AgendaUpdateDTO dto) {
-        log.info("PUT /api/agendamentos/{} - Atualizando agendamento", id);
+        log.info("PUT /agendamentos/{} - Atualizando agendamento", id);
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
@@ -78,13 +78,13 @@ public class AgendaController {
     public ResponseEntity<AgendaResponseDTO> atualizarStatus(
             @PathVariable Long id,
             @Valid @RequestBody AgendaStatusUpdateDTO dto) {
-        log.info("PATCH /api/agendamentos/{}/status - Atualizando status", id);
+        log.info("PATCH /agendamentos/{}/status - Atualizando status", id);
         return ResponseEntity.ok(service.atualizarStatus(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        log.info("DELETE /api/agendamentos/{} - Deletando agendamento", id);
+        log.info("DELETE /agendamentos/{} - Deletando agendamento", id);
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
@@ -92,13 +92,13 @@ public class AgendaController {
     @PostMapping("/disponibilidade")
     public ResponseEntity<List<LocalDateTime>> verificarDisponibilidade(
             @Valid @RequestBody DisponibilidadeRequestDTO dto) {
-        log.info("POST /api/agendamentos/disponibilidade - Verificando disponibilidade");
+        log.info("POST /agendamentos/disponibilidade - Verificando disponibilidade");
         return ResponseEntity.ok(service.verificarDisponibilidade(dto));
     }
 
     @GetMapping("/dentista/{dentistaId}/proximo-horario")
     public ResponseEntity<ProximoHorarioResponseDTO> buscarProximoHorario(@PathVariable Long dentistaId) {
-        log.info("GET /api/agendamentos/dentista/{}/proximo-horario - Buscando próximo horário", dentistaId);
+        log.info("GET /agendamentos/dentista/{}/proximo-horario - Buscando próximo horário", dentistaId);
         ProximoHorarioResponseDTO response = service.buscarProximoHorario(dentistaId);
         return ResponseEntity.ok(response);
     }
@@ -107,7 +107,7 @@ public class AgendaController {
     public ResponseEntity<List<AgendaResponseDTO>> buscarPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-        log.info("GET /api/agendamentos/periodo - Buscando por período: {} a {}", inicio, fim);
+        log.info("GET /agendamentos/periodo - Buscando por período: {} a {}", inicio, fim);
         return ResponseEntity.ok(service.buscarPorPeriodo(inicio, fim));
     }
 }

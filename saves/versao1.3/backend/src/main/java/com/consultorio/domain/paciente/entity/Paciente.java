@@ -43,6 +43,7 @@ public class Paciente {
     @Column(length = 20)
     private String telefone;
 
+    @Column(nullable = false)
     private LocalDate dataNascimento;
 
     @Enumerated(EnumType.STRING)
